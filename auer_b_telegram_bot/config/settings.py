@@ -16,6 +16,8 @@ LOG_LEVEL_AUER_B_TELEGRAM_BOT = os.getenv("LOG_LEVEL_AUER_B_TELEGRAM_BOT", "INFO
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
+AUER_B_URL = os.getenv("AUER_B_URL", "https://www.auer-packaging.com/de/de/Eurobeh%C3%A4lter-geschlossen.html?bstock")
+
 SQLITE_PATH = os.getenv("SQLITE_PATH", "./bot_db.db")
 #CSV_OUTPUT_PATH = os.getenv("CSV_OUTPUT_PATH", "")
 

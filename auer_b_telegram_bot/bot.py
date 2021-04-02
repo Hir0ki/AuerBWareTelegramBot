@@ -10,6 +10,11 @@ from config import settings
 def start(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('Hi! Use /set <seconds> to set a timer')
 
+def set_notification(update: Update, context: CallbackContext) -> None:
+    chat_id = update.ch
+
+
+
 
 def main() -> None:
     """Run bot."""

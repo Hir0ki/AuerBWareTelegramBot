@@ -3,9 +3,9 @@ from config import settings
 from data import Database
 import bot
 
-auer_scraper.scrape_site("https://www.auer-packaging.com/de/de/Eurobeh%C3%A4lter-geschlossen.html?bstock")
+auer_scraper.scrape_site(settings.AUER_B_URL)
 Database()
 
 
-#if __name__ == '__main__':
-#   bot.main()
+if __name__ == '__main__':
+   bot.main()
