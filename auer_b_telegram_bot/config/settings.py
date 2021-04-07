@@ -18,6 +18,8 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
 AUER_B_URL = os.getenv("AUER_B_URL", "https://www.auer-packaging.com/de/de/Eurobeh%C3%A4lter-geschlossen.html?bstock")
 
+AUER_SCRAPE_INTERVAL = os.getenv("AUER_SCRAPE_INTERVAL", 20)
+
 SQLITE_PATH = os.getenv("SQLITE_PATH", "./bot_db.db")
 #CSV_OUTPUT_PATH = os.getenv("CSV_OUTPUT_PATH", "")
 
