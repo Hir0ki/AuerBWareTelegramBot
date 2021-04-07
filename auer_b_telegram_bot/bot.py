@@ -20,7 +20,7 @@ def start_update_times(update: Update, context: CallbackContext) -> None:
 
     return TIME 
 
-def set_times_for_update(update: UPdate, context: CallbackContext) -> None:
+def set_times_for_update(update: Update, context: CallbackContext) -> None:
     replay_keyboard = [['1', '2', '3', '4', '5', '6'],
                        [ '7', '8', '9', '10', '11', '12'],
                        [ '13', '14', '15', '16', '17', '18'],
@@ -49,7 +49,7 @@ def main() -> None:
 
     conv_hanlder = ConversationHandler([CommandHandler('set_update_times',start_update_times)],
                                         states= {
-                                            DAY: [MessageHandler(Filters.regex(r"\w\w"),set_times_for_update )]
+                                            TIME: [MessageHandler(Filters.regex(r"\w\w"),set_times_for_update )]
                                         },
                                         fallbacks=[])
 

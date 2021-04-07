@@ -2,4 +2,4 @@ pyyaml
 requests
 BeautifulSoup4
 python-telegram-bot 
-markdown
+texttable

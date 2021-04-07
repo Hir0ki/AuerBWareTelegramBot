@@ -23,22 +23,33 @@ class Angebot():
     versandfertig_link: str
 
     def __init__(self, tr, scraped_at):
+        
+        if len(tr.text) == 0:
+            self.artnr = None
+            return
+
         tds = tr.find_all("td")
         self.außenmaße = tds[0].text
         self.artnr = tds[1].text
         self.handgriff = tds[2].text 
-        
-        preis_td = tds[3].find_all("span")
+        offset = 0
+        if  "KLT" in self.artnr:
+            offset = 1
+        if "EO" in self.artnr:
+            offset = -1 
+
+        preis_td = tds[3+offset].find_all("span")
+        logging.getLogger("scraper").info(f"Current artnr: {self.artnr} offset: {offset}")
         self.preis_alt = float(preis_td[1].text.replace("€", "").replace(",","."))
         self.preis_neu = float(preis_td[2].text.replace("€", "").replace(",","."))
-        self.stück_auf_palette = int(tds[4].text)
+        self.stück_auf_palette = int(tds[4+offset].text)
  
-        preis_td = tds[5].find_all("span")
+        preis_td = tds[5+offset].find_all("span")
         self.preis_stück_pro_palette_alt= float(preis_td[1].text.replace("€", "").replace(",","."))
         self.preis_stück_pro_palette_neu = float(preis_td[2].text.replace("€", "").replace(",","."))
         
-        self.verfügbar = int(tds[6].text)
-        self.versandfertig_link = tds[7].find("img")["title"]
+        self.verfügbar = int(tds[6+offset].text)
+        self.versandfertig_link = tds[7+offset].find("img")["title"]
 
         self.währung = "€"
 
