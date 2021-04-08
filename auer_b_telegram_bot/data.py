@@ -39,7 +39,7 @@ class Angebot():
             offset = -1 
 
         preis_td = tds[3+offset].find_all("span")
-        logging.getLogger("scraper").info(f"Current artnr: {self.artnr} offset: {offset}")
+        logging.getLogger("scraper").debug(f"Current artnr: {self.artnr} offset: {offset}")
         self.preis_alt = float(preis_td[1].text.replace("€", "").replace(",","."))
         self.preis_neu = float(preis_td[2].text.replace("€", "").replace(",","."))
         self.stück_auf_palette = int(tds[4+offset].text)
@@ -88,26 +88,27 @@ class Database:
 
     
     def insert_new_artnr(self, angebote: List[Angebot]):
-        self.logger.info(f"Try to insert {len(angebote)} items into local db")
+        self.logger.debug(f"Try to insert {len(angebote)} items into local db")
         for angebot in angebote:
             self._execute_query("INSERT INTO artikel VALUES ( ? ) ", [ angebot.artnr ], run_commit=True )
-        self.logger.info("Done inserting items")
+        self.logger.debug("Done inserting items")
 
     def insert_new_client(self, client):
-        self.logger.info(f"Try to insert new client with id {client}")
+        self.logger.debug(f"Try to insert new client with id {client}")
         try:
             self._execute_query("INSERT INTO clients VALUES ( ? ) ", [client], run_commit=True)
         except sqlite3.IntegrityError:
             pass
-        self.logger.info("Done inserting client")
+        self.logger.debug("Done inserting client")
 
     def delete_client(self, client):
-        self.logger.info(f"Try to delet client with id {client}")
-        try:
-            self._execute_query("DELETE FROM TABLE clients WHERE cliend_id = ( ? ) ", [client], run_commit=True)
-        except sqlite3.IntegrityError:
-            pass
-        self.logger.info("Done deleting client")
+        self.logger.debug(f"Try to delet client with id {client}")
+        if client is not None:
+            try:
+                self._execute_query("DELETE FROM clients WHERE client_id = ( ? ) ", [client], run_commit=True)
+            except sqlite3.IntegrityError:
+                pass
+        self.logger.debug("Done deleting client")
     
     def get_all_clients(self):
        return self._execute_select("SELECT * FROM clients", ())

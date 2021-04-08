@@ -17,12 +17,18 @@ def start(update: Update, _: CallbackContext) -> None:
 
 def subscribe(update: Update, context: CallbackContext) -> None:
     data : AuerData = AuerData.instance()
+    logger = logging.getLogger("root.Bot")
+    logger.info(f"Subcribing new client: {update.message.chat_id}")
     data.database.insert_new_client(str(update.message.chat_id))
-    update.message.reply_text("Sie sind bekomme jetzt jeden Tag um 20 Uhr die aktuellen Auer angebote")
+    update.message.reply_text("Sie bekommen jetzt jeden Tag um 20 Uhr die aktuellen Auer Angebote.")
 
 
 def unsubscribe(update: Update, _: CallbackContext) -> None:
     data : AuerData = AuerData.instance()
+    logger = logging.getLogger("root.Bot")
+    logger.info(f"Unsubcribing client: {update.message.chat_id}")
+    data.database.delete_client(update.message.chat_id)
+    update.message.reply_text("Sie bekomme jetzt keine Angebote mehr.")
 
 def get_current_angebote(update: Update, context: CallbackContext) -> None:
 
