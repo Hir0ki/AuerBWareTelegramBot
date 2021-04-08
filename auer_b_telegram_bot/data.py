@@ -64,7 +64,7 @@ class Database:
         self.logger = logging.getLogger("Database")
         database_connection = sqlite3.connect(settings.SQLITE_PATH)
         self.logger.info("connected to sqlite")
-        database_connection.execute( "CREATE TABLE IF NOT EXISTS client_alter( client_id VARCHAR(32), artnr VARCHAR(32), PRIMARY KEY( client_id, artnr ));") 
+        database_connection.execute( "CREATE TABLE IF NOT EXISTS clients( client_id VARCHAR(32), PRIMARY KEY( client_id ));") 
         database_connection.execute( "CREATE TABLE IF NOT EXISTS artikel( artnr VARCHAR(32) );" )
         database_connection.commit()
         database_connection.close() 
@@ -73,11 +73,17 @@ class Database:
     def _execute_query(self,query: str, arguments: Iterable, run_commit: bool):
         
         database_connection = sqlite3.connect(settings.SQLITE_PATH)
-        database_connection.execute(query, arguments)
+        result = database_connection.execute(query, arguments)
         if run_commit == True:
             database_connection.commit()
         database_connection.close()
+        return result
 
+    def _execute_select(self,query, arguments):
+        database_connection = sqlite3.connect(settings.SQLITE_PATH)
+        result = database_connection.execute(query, arguments).fetchall()
+        database_connection.close()
+        return result
 
     
     def insert_new_artnr(self, angebote: List[Angebot]):
@@ -85,6 +91,26 @@ class Database:
         for angebot in angebote:
             self._execute_query("INSERT INTO artikel VALUES ( ? ) ", [ angebot.artnr ], run_commit=True )
         self.logger.info("Done inserting items")
+
+    def insert_new_client(self, client):
+        self.logger.info(f"Try to insert new client with id {client}")
+        try:
+            self._execute_query("INSERT INTO clients VALUES ( ? ) ", [client], run_commit=True)
+        except sqlite3.IntegrityError:
+            pass
+        self.logger.info("Done inserting client")
+
+    def delete_client(self, client):
+        self.logger.info(f"Try to delet client with id {client}")
+        try:
+            self._execute_query("DELETE FROM TABLE clients WHERE cliend_id = ( ? ) ", [client], run_commit=True)
+        except sqlite3.IntegrityError:
+            pass
+        self.logger.info("Done deleting client")
+    
+    def get_all_clients(self):
+       return self._execute_select("SELECT * FROM clients", ())
+
 
 
 class AuerData:
@@ -111,7 +137,8 @@ class AuerData:
         table = texttable.Texttable()
         table.set_cols_align(("l","l","l"))
         table.set_cols_dtype(("t", "i", "t"))
-        table.add_row(("Type", "Verfügbare Menge", "Preis"))
+        table.add_row(("Type", "Menge", "Preis"))
+
         for entry in self.data:
             table.add_row([entry.artnr, entry.verfügbar, f"{entry.preis_neu:.2f} €"])
         table_string =  str(table.draw())

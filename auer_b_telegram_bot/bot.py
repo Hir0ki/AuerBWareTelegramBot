@@ -3,6 +3,8 @@ from telegram import Update, ParseMode, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, ConversationHandler, MessageHandler, Filters
 from config import settings
 from data import AuerData
+from datetime import time, timezone
+import logging
 import texttable
 
 TIME = range(1)
@@ -12,29 +14,28 @@ TIME = range(1)
 def start(update: Update, _: CallbackContext) -> None:
     update.message.reply_text('Hi! Use /set <seconds> to set a timer')
 
-def start_update_times(update: Update, context: CallbackContext) -> None:
-    reply_keyboard = [['Mo', 'Di', 'Mi'],
-                      ['Do', 'Fr', 'Sa'],
-                            ['So']]
-    update.message.reply_text("Setze die Tage andenem eine Benarchituging gesendet werden soll", reply_markup=ReplyKeyboardMarkup(reply_keyboard))
+def subscribe(update: Update, context: CallbackContext) -> None:
+    data : AuerData = AuerData.instance()
+    data.database.insert_new_client(str(update.message.chat_id))
+    update.message.reply_text("Sie sind bekomme jetzt jeden Tag um 20 Uhr die aktuellen Auer angebote")
 
-    return TIME 
 
-def set_times_for_update(update: Update, context: CallbackContext) -> None:
-    replay_keyboard = [['1', '2', '3', '4', '5', '6'],
-                       [ '7', '8', '9', '10', '11', '12'],
-                       [ '13', '14', '15', '16', '17', '18'],
-                       ['19', '20', '21', '23', '24'] ]
-    update.message.reply_text("Setze die Uhrzeit für die Benachrichtigung", reply_markup=ReplyKeyboardMarkup(replay_keyboard, one_time_keyboard=True))
-
-    return ConversationHandler.END 
+def unsubscribe(update: Update, _: CallbackContext) -> None:
+    data : AuerData = AuerData.instance()
 
 def get_current_angebote(update: Update, context: CallbackContext) -> None:
+
     data : AuerData = AuerData.instance()
     update.message.reply_text(data.text_table_of_current_data(), parse_mode=ParseMode.HTML)
 
-
-
+def get_current_angebote_job(context: CallbackContext) -> None:
+    logger = logging.getLogger("Bot")
+    logging.info("Send daily message to all users")
+    data : AuerData = AuerData.instance()
+    text = data.text_table_of_current_data()
+    clients = data.database.get_all_clients()
+    for client in clients:
+        context.bot.send_message(client[0], text ,parse_mode=ParseMode.HTML)
 
 def main() -> None:
     """Run bot."""
@@ -43,20 +44,17 @@ def main() -> None:
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
+    daily_run_time= time(23,45 )
 
     updater.job_queue.run_once( when=0, callback= auer_scraper.scrape_site )
     updater.job_queue.run_repeating( callback= auer_scraper.scrape_site, interval=int(settings.AUER_SCRAPE_INTERVAL), job_kwargs=[])
-
-    conv_hanlder = ConversationHandler([CommandHandler('set_update_times',start_update_times)],
-                                        states= {
-                                            TIME: [MessageHandler(Filters.regex(r"\w\w"),set_times_for_update )]
-                                        },
-                                        fallbacks=[])
+    updater.job_queue.run_daily(callback=get_current_angebote_job, time= daily_run_time  )
 
     # on different commands - answer in Telegram
-    dispatcher.add_handler(conv_hanlder)
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("angebote", get_current_angebote))
+    dispatcher.add_handler(CommandHandler("subscribe", subscribe))
+    dispatcher.add_handler(CommandHandler("unsubscribe", unsubscribe))
     # Start the Bot
     updater.start_polling()
 
