@@ -8,7 +8,7 @@ import logging
 
 
 def get_data_from_site(url):
-    logging.getLogger("scraper").info(f"Scraping url: {url}")
+    logging.getLogger("root.scraper").debug(f"Scraping url: {url}")
     html = BeautifulSoup(requests.get(url).text, "html.parser" )
     table = html.select("form.categoryForm")[0].find("tbody").find_all("tr")
     scraped_at = datetime.now()
@@ -18,7 +18,7 @@ def get_data_from_site(url):
     return angebote
 
 def scrape_site(context):
-    logger = logging.getLogger("Scraper")
+    logger = logging.getLogger("root.scraper")
     urls = ['https://www.auer-packaging.com/de/de/Eurobehälter-durchbrochen.html?bstock&cutomer_type=private', 
             'https://www.auer-packaging.com/de/de/Eurobeh%C3%A4lter-geschlossen.html?bstock&cutomer_type=private',
             'https://www.auer-packaging.com/de/de/RL-KLT-Beh%C3%A4lter.html?bstock&cutomer_type=private',

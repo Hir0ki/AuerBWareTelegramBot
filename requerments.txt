@@ -3,3 +3,4 @@ requests
 BeautifulSoup4
 python-telegram-bot 
 texttable
+pytz

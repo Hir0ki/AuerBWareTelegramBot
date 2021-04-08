@@ -82,6 +82,7 @@ class Database:
     def _execute_select(self,query, arguments):
         database_connection = sqlite3.connect(settings.SQLITE_PATH)
         result = database_connection.execute(query, arguments).fetchall()
+        
         database_connection.close()
         return result
 

@@ -3,7 +3,8 @@ from telegram import Update, ParseMode, ReplyKeyboardMarkup
 from telegram.ext import Updater, CommandHandler, CallbackContext, ConversationHandler, MessageHandler, Filters
 from config import settings
 from data import AuerData
-from datetime import time, timezone
+from datetime import time, timezone,datetime
+import pytz
 import logging
 import texttable
 
@@ -29,8 +30,8 @@ def get_current_angebote(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(data.text_table_of_current_data(), parse_mode=ParseMode.HTML)
 
 def get_current_angebote_job(context: CallbackContext) -> None:
-    logger = logging.getLogger("Bot")
-    logging.info("Send daily message to all users")
+    logger = logging.getLogger("root.Bot")
+    logger.info("Send daily message to all users")
     data : AuerData = AuerData.instance()
     text = data.text_table_of_current_data()
     clients = data.database.get_all_clients()
@@ -44,11 +45,12 @@ def main() -> None:
 
     # Get the dispatcher to register handlers
     dispatcher = updater.dispatcher
-    daily_run_time= time(23,45 )
+    
+    daily_run_time= time(20,1, tzinfo=pytz.timezone('Europe/Berlin'))
 
     updater.job_queue.run_once( when=0, callback= auer_scraper.scrape_site )
     updater.job_queue.run_repeating( callback= auer_scraper.scrape_site, interval=int(settings.AUER_SCRAPE_INTERVAL), job_kwargs=[])
-    updater.job_queue.run_daily(callback=get_current_angebote_job, time= daily_run_time  )
+    updater.job_queue.run_daily(callback=get_current_angebote_job, time= daily_run_time )
 
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
