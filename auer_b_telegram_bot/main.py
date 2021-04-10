@@ -3,6 +3,5 @@ from data import Database
 import bot
 
 
-
-if __name__ == '__main__':
-   bot.main()
+if __name__ == "__main__":
+    bot.main()

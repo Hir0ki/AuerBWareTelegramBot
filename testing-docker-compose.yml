@@ -1,0 +1,21 @@
+
+version: "3"
+services:
+  auer_bot:
+    build: .
+    env_file: "dev.env"
+    environment: 
+        - SQLITE_PATH=/var/lib/auer_telegram_bot/client_db.sqlite
+    volumes:
+        - auer_bot_database:/var/lib/auer_telegram_bot
+
+  influxdb:
+    image: influxdb:1.8
+    ports:
+        - 8086:8086
+    volumes:
+        - influxdb:/var/lib/influxdb
+
+volumes:
+    auer_bot_database:
+    influxdb:

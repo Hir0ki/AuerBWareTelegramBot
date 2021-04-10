@@ -4,3 +4,4 @@ BeautifulSoup4
 python-telegram-bot 
 texttable
 pytz
+influxdb
