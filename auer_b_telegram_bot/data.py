@@ -86,8 +86,8 @@ class Database:
             password=settings.INFLUXDB_PASSWORD,
             database=settings.INFLUXDB_DATABASE,
         )
+        self.logger.info(self._influx_client.ping())
         self._influx_client.create_database(settings.INFLUXDB_DATABASE)
-
         self.logger.info("done connecting to influxdb")
 
     def _execute_query(self, query: str, arguments: Iterable, run_commit: bool):
