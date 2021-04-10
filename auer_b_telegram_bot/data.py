@@ -160,10 +160,9 @@ class AuerData:
     @classmethod
     def instance(cls):
         logger = logging.getLogger("DataClass")
-        if cls._instance is None:
-            logger.info("Creating new DataClass instance")
-            cls._instance = cls.__new__(cls)
-            cls._instance.database = Database()
+        logger.info("Creating new DataClass instance")
+        cls._instance = cls.__new__(cls)
+        cls._instance.database = Database()
         return cls._instance
 
     def set_new_data(self, data):
