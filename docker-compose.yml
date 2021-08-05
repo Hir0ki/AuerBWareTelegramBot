@@ -3,10 +3,14 @@ services:
   auer_bot:
     build: .
     env_file: "dev.env"
-    environment: 
-        - SQLITE_PATH=/var/lib/auer_telegram_bot/client_db.sqlite
+    networks:
+      - timescaledb_multi_app_postgres
     volumes:
         - auer_bot_database:/var/lib/auer_telegram_bot
 
 volumes:
     auer_bot_database:
+
+networks:
+  timescaledb_multi_app_postgres:
+    external: true

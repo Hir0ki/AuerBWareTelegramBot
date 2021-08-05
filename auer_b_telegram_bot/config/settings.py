@@ -18,14 +18,11 @@ BOT_TOKEN = os.getenv("BOT_TOKEN", "")
 
 AUER_SCRAPE_INTERVAL = os.getenv("AUER_SCRAPE_INTERVAL", 20)
 
-SQLITE_PATH = os.getenv("SQLITE_PATH", "./bot_db.db")
-
-INFLUXDB_HOST = os.getenv("INFLUXDB_HOST", "")
-INFLUXDB_USERNAME = os.getenv("INFLUXDB_USERNAME", "")
-INFLUXDB_PASSWORD = os.getenv("INFLUXDB_PASSWORD", "")
-INFLUXDB_DATABASE = os.getenv("INFLUXDB_DATABASE", "AUER_B_WARE_SCRAPER")
-INFLUXDB_PORT = os.getenv("INFLUXDB_PORT", "8086")
-
+POSTGRES_USERNAME = os.getenv("POSTGRES_USERNAME", "auer_b_ware_bot")
+POSTGRES_DBNAME = os.getenv("POSTGRES_DBNAME", "auer_b_ware_bot")
+POSTGRES_HOSTNAME = os.getenv("POSTGRES_HOSTNAME", "timescaledb")
+POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
 
 # Load yml logging config
 logging_config_path = pathlib.Path(LOG_CONFIG_PATH)

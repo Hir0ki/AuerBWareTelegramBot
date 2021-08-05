@@ -4,4 +4,4 @@ BeautifulSoup4
 python-telegram-bot 
 texttable
 pytz
-influxdb
+psycopg2-binary

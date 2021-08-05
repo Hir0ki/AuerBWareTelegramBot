@@ -7,7 +7,7 @@ import logging
 
 
 def get_data_from_site(url):
-    logging.getLogger("root.scraper").debug(f"Scraping url: {url}")
+    logging.getLogger("root.scraper").info(f"Scraping url: {url}")
     html = BeautifulSoup(requests.get(url).text, "html.parser")
     table = html.select("form.categoryForm")[0].find("tbody").find_all("tr")
     scraped_at = datetime.now()
@@ -32,5 +32,5 @@ def scrape_site(context):
         angbote_new = [angebot for angebot in angbote_new if angebot.artnr is not None]
         angebote = angebote + angbote_new
     logger.info(f"Done Scraping found {len(angebote)} listings")
-    dataclass = data.AuerData.instance()
+    dataclass = data.AuerData()
     dataclass.set_new_data(angebote)
