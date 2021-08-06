@@ -1,5 +1,3 @@
-from config import settings
-from data import Database
 import bot
 
 

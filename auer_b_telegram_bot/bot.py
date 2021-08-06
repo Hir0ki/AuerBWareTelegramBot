@@ -9,11 +9,10 @@ from telegram.ext import (
     Filters,
 )
 from config import settings
-from data import AuerData
+from auer_b_telegram_bot.Controllers import AuerController
 from datetime import time, timezone, datetime
 import pytz
 import logging
-import texttable
 
 TIME = range(1)
 
@@ -24,7 +23,7 @@ def start(update: Update, _: CallbackContext) -> None:
 
 
 def subscribe(update: Update, context: CallbackContext) -> None:
-    data: AuerData = AuerData.instance()
+    data: AuerController = AuerController()
     logger = logging.getLogger("root.Bot")
     logger.info(f"Subcribing new client: {update.message.chat_id}")
     data.database.insert_new_client(str(update.message.chat_id))
@@ -34,7 +33,7 @@ def subscribe(update: Update, context: CallbackContext) -> None:
 
 
 def unsubscribe(update: Update, _: CallbackContext) -> None:
-    data: AuerData = AuerData.instance()
+    data: AuerController = AuerController()
     logger = logging.getLogger("root.Bot")
     logger.info(f"Unsubcribing client: {update.message.chat_id}")
     data.database.delete_client(update.message.chat_id)
@@ -43,7 +42,7 @@ def unsubscribe(update: Update, _: CallbackContext) -> None:
 
 def get_current_angebote(update: Update, context: CallbackContext) -> None:
 
-    data: AuerData = AuerData.instance()
+    data: AuerController = AuerController()
     update.message.reply_text(
         data.text_table_of_current_data(), parse_mode=ParseMode.HTML
     )
@@ -52,7 +51,7 @@ def get_current_angebote(update: Update, context: CallbackContext) -> None:
 def get_current_angebote_job(context: CallbackContext) -> None:
     logger = logging.getLogger("root.Bot")
     logger.info("Send daily message to all users")
-    data: AuerData = AuerData.instance()
+    data: AuerController = AuerController()
     text = data.text_table_of_current_data()
     clients = data.database.get_all_clients()
     for client in clients:

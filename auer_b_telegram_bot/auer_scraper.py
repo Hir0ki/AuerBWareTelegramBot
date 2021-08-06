@@ -1,8 +1,8 @@
 import requests
 from bs4 import BeautifulSoup
-from config import settings
 from datetime import datetime
-import data
+from auer_b_telegram_bot.Controllers import AuerController
+from auer_b_telegram_bot.data import Angebot
 import logging
 
 
@@ -13,7 +13,7 @@ def get_data_from_site(url):
     scraped_at = datetime.now()
     angebote = []
     for row in table:
-        angebote.append(data.Angebot(row, scraped_at))
+        angebote.append(Angebot(row, scraped_at))
     return angebote
 
 
@@ -32,5 +32,5 @@ def scrape_site(context):
         angbote_new = [angebot for angebot in angbote_new if angebot.artnr is not None]
         angebote = angebote + angbote_new
     logger.info(f"Done Scraping found {len(angebote)} listings")
-    dataclass = data.AuerData()
+    dataclass = AuerController()
     dataclass.set_new_data(angebote)
