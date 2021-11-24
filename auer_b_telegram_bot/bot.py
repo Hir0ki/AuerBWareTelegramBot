@@ -24,7 +24,7 @@ def start(update: Update, _: CallbackContext) -> None:
 
 def subscribe(update: Update, context: CallbackContext) -> None:
     data: AuerController = AuerController()
-    logger = logging.getLogger("root.Bot")
+    logger = logging.getLogger("auer_b_telegram_bot.Bot")
     logger.info(f"Subcribing new client: {update.message.chat_id}")
     data.database.insert_new_client(str(update.message.chat_id))
     update.message.reply_text(
@@ -34,7 +34,7 @@ def subscribe(update: Update, context: CallbackContext) -> None:
 
 def unsubscribe(update: Update, _: CallbackContext) -> None:
     data: AuerController = AuerController()
-    logger = logging.getLogger("root.Bot")
+    logger = logging.getLogger("auer_b_telegram_bot.Bot")
     logger.info(f"Unsubcribing client: {update.message.chat_id}")
     data.database.delete_client(update.message.chat_id)
     update.message.reply_text("Sie bekomme jetzt keine Angebote mehr.")
@@ -49,7 +49,7 @@ def get_current_angebote(update: Update, context: CallbackContext) -> None:
 
 
 def get_current_angebote_job(context: CallbackContext) -> None:
-    logger = logging.getLogger("root.Bot")
+    logger = logging.getLogger("auer_b_telegram_bot.Bot")
     logger.info("Send daily message to all users")
     data: AuerController = AuerController()
     text = data.text_table_of_current_data()

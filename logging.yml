@@ -18,6 +18,6 @@ root:
 
 loggers:
   auer_b_telegram_bot:
-    level: INFO
+    level: DEBUG
     handlers: [console]
     propagate: no

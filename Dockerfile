@@ -6,7 +6,7 @@ RUN apt-get update
 
 
 ENV PYTHONPATH /
-COPY logging.yml /logging.yml
+
 
 
 
@@ -17,8 +17,10 @@ RUN  ./venv/bin/activate
 COPY requerments.txt requerments.txt
 RUN  python -m pip install -r requerments.txt
 
-COPY auer_b_telegram_bot auer_b_telegram_bot 
-
+COPY logging.yml /logging.yml
 COPY start.sh start.sh
 RUN  chmod a+x ./start.sh
+
+COPY auer_b_telegram_bot auer_b_telegram_bot 
+
 CMD ./start.sh

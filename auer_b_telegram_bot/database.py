@@ -1,4 +1,4 @@
-from auer_b_telegram_bot.data import Angebot
+from auer_b_telegram_bot.data import Angebot, AngebotFactory
 from config import settings
 from typing import List, Iterable
 import psycopg2
@@ -7,7 +7,7 @@ import logging
 
 class Database:
     def __init__(self):
-        self.logger = logging.getLogger("root.Database")
+        self.logger = logging.getLogger("auer_b_telegram_bot.Database")
         self.logger.debug(
             f"postgres paramter: database: {settings.POSTGRES_DBNAME} / Hostname: {settings.POSTGRES_HOSTNAME} / Username: {settings.POSTGRES_USERNAME} / Port: {settings.POSTGRES_PORT}"
         )
@@ -26,7 +26,8 @@ class Database:
         curr.execute(
             """CREATE TABLE IF NOT EXISTS artikel( artnr VARCHAR(32), 
                                                             außenmaße VARCHAR(50), 
-                                                            handgriff VARCHAR(30), 
+                                                            besonderheit1 VARCHAR(80),
+                                                            besonderheit2 VARCHAR(80),
                                                             preis_alt REAL, 
                                                             preis_neu REAL,
                                                             währung VARCHAR(10),  
@@ -34,7 +35,7 @@ class Database:
                                                             preis_stück_pro_palette_alt REAL,
                                                             preis_stück_pro_palette_neu REAL,
                                                             verfügbar INT,
-                                                            versandfertig_link VARCHAR(300),
+                                                            versandfertig_link VARCHAR(500),
                                                             ist_aktive BOOLEAN,
                                                         PRIMARY KEY( artnr ) );"""
         )
@@ -52,8 +53,8 @@ class Database:
 
     def _execute_select(self, query, arguments):
         curr = self.database_connection.cursor()
-        result = curr.execute(query, arguments).fetchall()
-
+        curr.execute(query, arguments)
+        result = curr.fetchall()
         curr.close()
         return result
 
@@ -75,8 +76,10 @@ class Database:
             [tuple([angebot.artnr for angebot in angebote])],
             run_commit=True,
         )
+        
         for angebot in angebote:
-
+            self.logger.debug(f"angebot {angebot.artnr} besonderheit1 len: {len(angebot.besonderheit1)}")
+            self.logger.debug(f"angebot besonderheit2 len: {len(angebot.besonderheit2)}")
             self._execute_query(
                 """INSERT INTO artikel ( artnr, 
                                          außenmaße, 
@@ -89,9 +92,10 @@ class Database:
                                          verfügbar, 
                                          versandfertig_link,
                                          ist_aktive,
-                                         handgriff ) 
+                                         besonderheit1,
+                                         besonderheit2 ) 
                                 VALUES 
-                                    ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) 
+                                    ( %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s ) 
                                 ON CONFLICT (artnr)
                                 DO
                                     UPDATE SET 
@@ -106,7 +110,8 @@ class Database:
                                             verfügbar = %s,
                                             versandfertig_link = %s,
                                             ist_aktive = %s,
-                                            handgriff = %s;""",
+                                            besonderheit1 = %s,
+                                            besonderheit2 = %s;""",
                 [
                     angebot.artnr,
                     angebot.außenmaße,
@@ -119,7 +124,8 @@ class Database:
                     angebot.verfügbar,
                     angebot.versandfertig_link,
                     True,  # ist_akive is set to true
-                    angebot.handgriff,
+                    angebot.besonderheit1,
+                    angebot.besonderheit2,
                     angebot.artnr,
                     angebot.außenmaße,
                     angebot.preis_alt,
@@ -131,7 +137,8 @@ class Database:
                     angebot.verfügbar,
                     angebot.versandfertig_link,
                     True,  # ist_aktive is set to true
-                    angebot.handgriff,
+                    angebot.besonderheit1,
+                    angebot.besonderheit2,
                 ],
                 run_commit=True,
             )
@@ -165,7 +172,7 @@ class Database:
         return self._execute_select("SELECT * FROM clients", ())
 
     def get_active_data(self):
-        sql_data = self._execute_query(
-            "SELECT * FROM artikel WHERE aktive = True", (), run_commit=False
+        result_list = self._execute_select(
+            "SELECT * FROM artikel WHERE ist_aktive  = True", ()
         )
-        sql_data.fetch_all()
+        return AngebotFactory.create_angebote_from_result_list(result_list)

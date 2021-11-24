@@ -35,3 +35,14 @@ else:
     raise ValueError("Error while loading logging config")
 
 dictConfig(logging_config)
+# set Root logger level explicitly
+if LOG_LEVEL_ROOT == "INFO":
+    logging.getLogger('root').setLevel(logging.INFO)
+if LOG_LEVEL_ROOT == "DEBUG":
+    logging.getLogger('root').setLevel(logging.DEBUG)
+if LOG_LEVEL_ROOT == "CRITICAL":
+    logging.getLogger('root').setLevel(logging.CRITICAL)
+if LOG_LEVEL_ROOT == "ERROR":
+    logging.getLogger('root').setLevel(logging.ERROR)
+if LOG_LEVEL_ROOT == "WARNING":
+    logging.getLogger('root').setLevel(logging.WARNING)

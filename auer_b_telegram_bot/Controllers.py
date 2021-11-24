@@ -21,7 +21,7 @@ class AuerController:
         table.set_cols_dtype(("t", "i", "t"))
         table.add_row(("Type", "Menge", "Preis"))
 
-        for entry in self.data:
+        for entry in self.get_current_data():
             table.add_row([entry.artnr, entry.verfügbar, f"{entry.preis_neu:.2f} €"])
         table_string = str(table.draw())
         table_string = "<pre>" + table_string + "</pre>"
