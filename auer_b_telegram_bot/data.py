@@ -41,12 +41,29 @@ class AngebotFactory:
         offset = 0
         if "KLT" in artnr:
             offset = 0
-        if "EO" in artnr:
+        elif "EG" in artnr:
+            offset = 0
+        elif "EO" in artnr:
             offset = -1
-        if offset == -1 or offset == 1:
             besonderheit1 = None
             besonderheit2 = None
+        elif "RK" in artnr:
+            offset = -1
+            besonderheit1 = tds[2].text
+            besonderheit2 = None
+        elif "B H" in artnr:
+            offset = -1
+            besonderheit1 = tds[2].text
+            besonderheit2 = None
+        elif "B R" in artnr:
+            offset = -1
+            besonderheit1 = tds[2].text
+            besonderheit2 = None
         else:
+            offset = -1
+            besonderheit1 = tds[2].text
+            besonderheit2 = None
+        if offset == 0:
             besonderheit1 = tds[2].text
             besonderheit2 = tds[3].text
 
@@ -66,8 +83,10 @@ class AngebotFactory:
         )
 
         verfügbar = int(tds[7 + offset].text.replace(".", ""))
-        versandfertig_link = tds[8 + offset].find("img")["title"]
-
+        try:
+            versandfertig_link = tds[8 + offset].find("img")["title"]
+        except Exception:
+            versandfertig_link = tds[8 + offset].text
         währung = "€"
 
         return Angebot(

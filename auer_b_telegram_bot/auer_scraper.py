@@ -16,15 +16,20 @@ def get_data_from_site(url):
         angebote.append(AngebotFactory.create_angebot_from_html(row, scraped_at))
     return angebote
 
+def get_urls():
+    logger = logging.getLogger("auer_b_telegram_bot.scraper")
+    url ="https://www.auer-packaging.com/de/de/B-Ware.html"
+    base_url = 'https://www.auer-packaging.com'
+    logger.info(f"Scraping urls: {url}")
+    html = BeautifulSoup(requests.get(url).text, "html.parser")
+    html_a_links = html.select("div.categoryview")[0].find_all("a")
+    urls = [ base_url+link['href'] for link in html_a_links if link['href'] != "/de/de/Toolboxen-Pro.html?bstock"]
 
+    return urls
 def scrape_site(context):
     logger = logging.getLogger("auer_b_telegram_bot.scraper")
-    urls = [
-        "https://www.auer-packaging.com/de/de/Eurobehälter-durchbrochen.html?bstock&cutomer_type=private",
-        "https://www.auer-packaging.com/de/de/Eurobeh%C3%A4lter-geschlossen.html?bstock&cutomer_type=private",
-        "https://www.auer-packaging.com/de/de/RL-KLT-Beh%C3%A4lter.html?bstock&cutomer_type=private",
-        "https://www.auer-packaging.com/de/de/R-KLT-Beh%C3%A4lter.html?bstock&cutomer_type=private",
-    ]
+    
+    urls = get_urls()
     logger.info("Starting to Scraper site")
     angebote = []
     for url in urls:
