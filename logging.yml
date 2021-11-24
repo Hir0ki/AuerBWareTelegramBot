@@ -18,6 +18,18 @@ root:
 
 loggers:
   auer_b_telegram_bot:
-    level: DEBUG
+    level: INFO
+    handlers: [console]
+    propagate: no
+  auer_b_telegram_bot.database:
+    level: INFO
+    handlers: [console]
+    propagate: no
+  auer_b_telegram_bot.scraper:
+    level: INFO
+    handlers: [console]
+    propagate: no
+  auer_b_telegram_bot.controller:
+    level: INFO
     handlers: [console]
     propagate: no

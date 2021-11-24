@@ -5,7 +5,7 @@ import logging
 
 class AuerController:
     def __init__(self):
-        self.logger = logging.getLogger("root.dataclass")
+        self.logger = logging.getLogger("auer_b_telegram_bot.controller")
         self.logger.info("Creating new DataClass instance")
         self.database = Database()
 

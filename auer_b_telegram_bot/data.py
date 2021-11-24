@@ -29,7 +29,7 @@ class AngebotFactory:
     @staticmethod
     def create_angebot_from_html(tr, scraped_at) -> Angebot:
 
-        logger = logging.getLogger("auer_b_telegram_bot.scrap")
+        logger = logging.getLogger("auer_b_telegram_bot.scraper")
 
         if len(tr.text) == 0:
             artnr = None
@@ -93,15 +93,16 @@ class AngebotFactory:
             return_list.append(Angebot(
                 artnr=entry[0],
                 außenmaße=entry[1],
-                handgriff=entry[2],
-                preis_alt=entry[3],
-                preis_neu=entry[4],
-                währung=entry[5],
-                stück_auf_palette=entry[6],
-                preis_stück_pro_palette_neu=entry[7],
-                preis_stück_pro_palette_alt=entry[8],
-                verfügbar=entry[9],
-                versandfertig_link=[10],
+                besonderheit1=entry[2],
+                besonderheit2=entry[3],
+                preis_alt=entry[4],
+                preis_neu=entry[5],
+                währung=entry[6],
+                stück_auf_palette=entry[7],
+                preis_stück_pro_palette_neu=entry[8],
+                preis_stück_pro_palette_alt=entry[9],
+                verfügbar=entry[10],
+                versandfertig_link=[11],
                 scraped_at=None
             ))
         return return_list

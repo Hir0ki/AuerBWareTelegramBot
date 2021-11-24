@@ -7,7 +7,7 @@ import logging
 
 class Database:
     def __init__(self):
-        self.logger = logging.getLogger("auer_b_telegram_bot.Database")
+        self.logger = logging.getLogger("auer_b_telegram_bot.database")
         self.logger.debug(
             f"postgres paramter: database: {settings.POSTGRES_DBNAME} / Hostname: {settings.POSTGRES_HOSTNAME} / Username: {settings.POSTGRES_USERNAME} / Port: {settings.POSTGRES_PORT}"
         )
@@ -45,6 +45,8 @@ class Database:
 
     def _execute_query(self, query: str, arguments: Iterable, run_commit: bool):
         curr = self.database_connection.cursor()
+        self.logger.debug(f"Execute Query: {query}")
+        self.logger.debug(f"Query Parameter: {arguments}")
         result = curr.execute(query, arguments)
         if run_commit == True:
             self.database_connection.commit()
@@ -78,8 +80,7 @@ class Database:
         )
         
         for angebot in angebote:
-            self.logger.debug(f"angebot {angebot.artnr} besonderheit1 len: {len(angebot.besonderheit1)}")
-            self.logger.debug(f"angebot besonderheit2 len: {len(angebot.besonderheit2)}")
+            
             self._execute_query(
                 """INSERT INTO artikel ( artnr, 
                                          außenmaße, 
