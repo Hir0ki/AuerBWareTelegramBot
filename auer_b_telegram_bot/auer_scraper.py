@@ -25,7 +25,11 @@ def get_urls():
     html_a_links = html.select("div.categoryview")[0].find_all("a")
     urls = [ base_url+link['href'] for link in html_a_links if link['href'] != "/de/de/Toolboxen-Pro.html?bstock"]
 
+    # turn into set to remove dublicats 
+    urls = set(urls)
+
     return urls
+    
 def scrape_site(context):
     logger = logging.getLogger("auer_b_telegram_bot.scraper")
     
