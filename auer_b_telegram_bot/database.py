@@ -18,31 +18,7 @@ class Database:
             password=settings.POSTGRES_PASSWORD,
             port=settings.POSTGRES_PORT,
         )
-        self.logger.info("connected to postgres")
-        curr = self.database_connection.cursor()
-        curr.execute(
-            "CREATE TABLE IF NOT EXISTS clients( client_id VARCHAR(32), PRIMARY KEY( client_id ));"
-        )
-        curr.execute(
-            """CREATE TABLE IF NOT EXISTS artikel( artnr VARCHAR(32), 
-                                                            außenmaße VARCHAR(50), 
-                                                            besonderheit1 VARCHAR(80),
-                                                            besonderheit2 VARCHAR(80),
-                                                            preis_alt REAL, 
-                                                            preis_neu REAL,
-                                                            währung VARCHAR(10),  
-                                                            stück_auf_palette INT,
-                                                            preis_stück_pro_palette_alt REAL,
-                                                            preis_stück_pro_palette_neu REAL,
-                                                            verfügbar INT,
-                                                            versandfertig_link VARCHAR(500),
-                                                            ist_aktive BOOLEAN,
-                                                        PRIMARY KEY( artnr ) );"""
-        )
-        self.database_connection.commit()
-        curr.close()
-        self.logger.info("postgres init complete")
-
+        
     def _execute_query(self, query: str, arguments: Iterable, run_commit: bool):
         curr = self.database_connection.cursor()
         self.logger.debug(f"Execute Query: {query}")
