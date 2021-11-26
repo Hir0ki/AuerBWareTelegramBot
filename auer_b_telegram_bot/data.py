@@ -12,22 +12,23 @@ class Angebot:
     artnr: str
     besonderheit1: str
     besonderheit2: str
-    preis_alt: float
+    preis_b: float
     preis_neu: float
     währung: str
     stück_auf_palette: int
-    preis_stück_pro_palette_alt: float
+    preis_stück_pro_palette_b: float
     preis_stück_pro_palette_neu: float
     verfügbar: int
     versandfertig_link: str
+    kategorie_id: str
 
-    # def __init__(self, tr, scraped_at):
+    
 
 
 class AngebotFactory:
     
     @staticmethod
-    def create_angebot_from_html(tr, scraped_at) -> Angebot:
+    def create_angebot_from_html(tr, scraped_at, kategorie_id) -> Angebot:
 
         logger = logging.getLogger("auer_b_telegram_bot.scraper")
 
@@ -103,6 +104,7 @@ class AngebotFactory:
             preis_stück_pro_palette_neu,
             verfügbar,
             versandfertig_link,
+            kategorie_id,
         )
 
     @staticmethod
@@ -122,6 +124,7 @@ class AngebotFactory:
                 preis_stück_pro_palette_alt=entry[9],
                 verfügbar=entry[10],
                 versandfertig_link=[11],
+                kategorie_id=[12],
                 scraped_at=None
             ))
         return return_list

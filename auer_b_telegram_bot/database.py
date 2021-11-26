@@ -19,7 +19,7 @@ class Database:
             port=settings.POSTGRES_PORT,
         )
         
-    def _execute_query(self, query: str, arguments: Iterable, run_commit: bool):
+    def execute_query(self, query: str, arguments: Iterable, run_commit: bool):
         curr = self.database_connection.cursor()
         self.logger.debug(f"Execute Query: {query}")
         self.logger.debug(f"Query Parameter: {arguments}")
@@ -49,7 +49,7 @@ class Database:
 
     def modify_artikel(self, angebote: List[Angebot]):
         self._convert_angebote_to_influx_json(angebote)
-        self._execute_query(
+        self.execute_query(
             "UPDATE artikel SET ist_aktive = FALSE WHERE artnr NOT IN %s ",
             [tuple([angebot.artnr for angebot in angebote])],
             run_commit=True,
@@ -57,7 +57,7 @@ class Database:
         
         for angebot in angebote:
             
-            self._execute_query(
+            self.execute_query(
                 """INSERT INTO artikel ( artnr, 
                                          außenmaße, 
                                          preis_alt, 
@@ -125,7 +125,7 @@ class Database:
     def insert_new_client(self, client):
         self.logger.debug(f"Try to insert new client with id {client}")
         try:
-            self._execute_query(
+            self.execute_query(
                 "INSERT INTO clients VALUES ( %s ) ", [client], run_commit=True
             )
         except psycopg2.IntegrityError:
@@ -136,7 +136,7 @@ class Database:
         self.logger.debug(f"Try to delet client with id {client}")
         if client is not None:
             try:
-                self._execute_query(
+                self.execute_query(
                     "DELETE FROM clients WHERE client_id = ( %s ) ",
                     [client],
                     run_commit=True,

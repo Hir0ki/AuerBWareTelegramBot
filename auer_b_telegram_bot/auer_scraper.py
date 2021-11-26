@@ -13,7 +13,7 @@ def get_data_from_site(url):
     scraped_at = datetime.now()
     angebote = []
     for row in table:
-        angebote.append(AngebotFactory.create_angebot_from_html(row, scraped_at))
+        angebote.append(AngebotFactory.create_angebot_from_html(row, scraped_at,1))
     return angebote
 
 def get_urls():
@@ -42,4 +42,4 @@ def scrape_site(context):
         angebote = angebote + angbote_new
     logger.info(f"Done Scraping found {len(angebote)} listings")
     dataclass = AuerController()
-    dataclass.set_new_data(angebote)
+    dataclass.write_data_to_db(angebote)
