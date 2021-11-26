@@ -45,7 +45,7 @@ class AngebotFactory:
         elif "EG" in artnr:
             offset = 0
         elif "EO" in artnr:
-            offset = -1
+            offset = -2
             besonderheit1 = None
             besonderheit2 = None
         elif "RK" in artnr:
@@ -69,7 +69,7 @@ class AngebotFactory:
             besonderheit2 = tds[3].text
 
         preis_td = tds[4 + offset].find_all("span")
-        logger.debug(f"Current artnr: {artnr} offset: {offset}")
+        logger.debug(f"Current artnr: {artnr} offset: {offset}, len Preise: {len(preis_td)}")
 
         preis_alt = float(preis_td[1].text.replace("€", "").replace(",", "."))
         preis_neu = float(preis_td[2].text.replace("€", "").replace(",", "."))

@@ -8,7 +8,7 @@ import logging
 class AuerController:
     def __init__(self):
         self.logger = logging.getLogger("auer_b_telegram_bot.controller")
-        self.logger.info("Creating new DataClass instance")
+        self.logger.info("Inserting scraped data into db")
         self.database = Database()
 
     def write_data_to_db(self, angebote: List[Angebot]):
@@ -49,49 +49,58 @@ class AuerController:
                 ],
                 run_commit=False,
             )
-
-            self.database.execute_query(
+            # check if preis  is same as last entry in db
+            db_preise = self.database._execute_select(
                 """
-                    INSERT INTO preise ( 
-                        created_datetime ,
+                    SELECT created_datetime,
                         artnr,
                         preis_neu,
                         preis_b_ware,
                         preis_pro_stück_palatte_neu,
                         preis_pro_stück_palatte_b_ware,
-                        währung )
-                    VALUES
-                        (%s, %s, %s, %s, %s, %s, %s);
-                    """,
-                [
-                    angebot.scraped_at,
-                    angebot.artnr,
-                    angebot.preis_neu,
-                    angebot.preis_b,
-                    angebot.preis_stück_pro_palette_neu,
-                    angebot.preis_stück_pro_palette_b,
-                    angebot.währung,
-                ],
-                run_commit=False,
-            )
-
-            self.database.execute_query(
+                        währung FROM preise 
+                        WHERE  artnr = %s 
+                        ORDER BY created_datetime DESC
+                        LIMIT 1
+                """,
+                [angebot.artnr],
+            ) 
+            if len(db_preise) != 0:
+                db_preise = db_preise[0]
+                # if data is diff insert
+                if db_preise != None and (
+                    db_preise[2] != angebot.preis_neu
+                    or db_preise[3] != angebot.preis_b
+                    or db_preise[4] != angebot.preis_stück_pro_palette_neu
+                    or db_preise[5] != angebot.preis_stück_pro_palette_b
+                ):  
+                    self.insert_preis(angebot)
+            # insert first entry
+            else:
+                self.insert_preis(angebot)
+            
+            # check if bestands data is same as last entry in db
+            db_bestand = self.database._execute_select(
                 """
-                    INSERT INTO bestand ( 
-                        created_datetime,
+                SELECT created_datetime,
                         artnr,
                         verfügbar
-                        )
-                    VALUES
-                        (%s, %s, %s);
-                    """,
-                [
-                    angebot.scraped_at,
-                    angebot.artnr,
-                    angebot.verfügbar,
-                ],
-                run_commit=False,
+                        FROM bestand 
+                        WHERE  artnr = %s 
+                        ORDER BY created_datetime DESC
+                        LIMIT 1
+                """,
+                [angebot.artnr],
             )
+
+            if len(db_bestand) != 0:
+                db_bestand = db_bestand[0]
+                # if data is diff insert
+                if db_bestand[2] != angebot.verfügbar:
+                    self.insert_bestand(angebot)
+            # insert first entry
+            else:
+                self.insert_bestand(angebot)
 
             self.database.database_connection.commit()
 
@@ -109,3 +118,48 @@ class AuerController:
         table_string = str(table.draw())
         table_string = "<pre>" + table_string + "</pre>"
         return table_string
+
+    def insert_preis(self, angebot):
+        self.database.execute_query(
+            """
+                            INSERT INTO preise ( 
+                                created_datetime ,
+                                artnr,
+                                preis_neu,
+                                preis_b_ware,
+                                preis_pro_stück_palatte_neu,
+                                preis_pro_stück_palatte_b_ware,
+                                währung )
+                            VALUES
+                                (%s, %s, %s, %s, %s, %s, %s);
+                            """,
+            [
+                angebot.scraped_at,
+                angebot.artnr,
+                angebot.preis_neu,
+                angebot.preis_b,
+                angebot.preis_stück_pro_palette_neu,
+                angebot.preis_stück_pro_palette_b,
+                angebot.währung,
+            ],
+            run_commit=False,
+        )
+
+    def insert_bestand(self, angebot):
+        self.database.execute_query(
+            """
+                            INSERT INTO bestand ( 
+                                created_datetime,
+                                artnr,
+                                verfügbar
+                                )
+                            VALUES
+                                (%s, %s, %s);
+                            """,
+            [
+                angebot.scraped_at,
+                angebot.artnr,
+                angebot.verfügbar,
+            ],
+            run_commit=False,
+        )
