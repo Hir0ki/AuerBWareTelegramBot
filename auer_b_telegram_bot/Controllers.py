@@ -64,7 +64,7 @@ class AuerController:
                         LIMIT 1
                 """,
                 [angebot.artnr],
-            ) 
+            )
             if len(db_preise) != 0:
                 db_preise = db_preise[0]
                 # if data is diff insert
@@ -73,12 +73,12 @@ class AuerController:
                     or db_preise[3] != angebot.preis_b
                     or db_preise[4] != angebot.preis_stück_pro_palette_neu
                     or db_preise[5] != angebot.preis_stück_pro_palette_b
-                ):  
+                ):
                     self.insert_preis(angebot)
             # insert first entry
             else:
                 self.insert_preis(angebot)
-            
+
             # check if bestands data is same as last entry in db
             db_bestand = self.database._execute_select(
                 """

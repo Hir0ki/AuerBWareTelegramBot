@@ -18,7 +18,7 @@ class Database:
             password=settings.POSTGRES_PASSWORD,
             port=settings.POSTGRES_PORT,
         )
-        
+
     def execute_query(self, query: str, arguments: Iterable, run_commit: bool):
         curr = self.database_connection.cursor()
         self.logger.debug(f"Execute Query: {query}")
@@ -46,7 +46,6 @@ class Database:
             influx_dict["time"] = angebot.scraped_at.isoformat("T") + "Z"
             # influx_write_list.append(influx_dict)
         # self._influx_client.write_points(influx_write_list)
-
 
     def insert_new_client(self, client):
         self.logger.debug(f"Try to insert new client with id {client}")
