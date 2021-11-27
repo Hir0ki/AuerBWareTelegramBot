@@ -1,4 +1,3 @@
-from auer_b_telegram_bot.data import Angebot, AngebotFactory
 from config import settings
 from typing import List, Iterable
 import psycopg2
@@ -36,17 +35,6 @@ class Database:
         curr.close()
         return result
 
-    def _convert_angebote_to_influx_json(self, angebote: List[Angebot]):
-        influx_write_list = []
-        for angebot in angebote:
-            influx_dict = {}
-            influx_dict["measurement"] = "auer_b_ware"
-            influx_dict["tags"] = {"artnr": angebot.artnr}
-            influx_dict["fields"] = {"Int_value": angebot.verfügbar}
-            influx_dict["time"] = angebot.scraped_at.isoformat("T") + "Z"
-            # influx_write_list.append(influx_dict)
-        # self._influx_client.write_points(influx_write_list)
-
     def insert_new_client(self, client):
         self.logger.debug(f"Try to insert new client with id {client}")
         try:
@@ -77,4 +65,5 @@ class Database:
         result_list = self._execute_select(
             "SELECT * FROM artikel WHERE ist_aktive  = True", ()
         )
-        return AngebotFactory.create_angebote_from_result_list(result_list)
+        return data.AngebotFactory.create_angebote_from_result_list(result_list)
+

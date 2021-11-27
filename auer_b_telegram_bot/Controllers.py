@@ -1,4 +1,4 @@
-from auer_b_telegram_bot.data import Angebot
+from auer_b_telegram_bot.records import Angebot
 from auer_b_telegram_bot.database import Database
 from typing import List
 import texttable
