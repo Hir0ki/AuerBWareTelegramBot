@@ -68,15 +68,17 @@ class AuerController:
             if len(db_preise) != 0:
                 db_preise = db_preise[0]
                 # if data is diff insert
-                if db_preise != None and (
-                    db_preise[2] != angebot.preis_neu
-                    or db_preise[3] != angebot.preis_b
-                    or db_preise[4] != angebot.preis_stück_pro_palette_neu
-                    or db_preise[5] != angebot.preis_stück_pro_palette_b
-                ):
-                    self.insert_preis(angebot)
+                if len(db_preise) >= 0:
+                    if (
+                        db_preise[2] != angebot.preis_neu
+                        or db_preise[3] != angebot.preis_b
+                        or db_preise[4] != angebot.preis_stück_pro_palette_neu
+                        or db_preise[5] != angebot.preis_stück_pro_palette_b
+                    ):
+                        self.insert_preis(angebot)
             # insert first entry
             else:
+                self.logger.info(f"Doing first price insert for artnr {angebot.artnr}")
                 self.insert_preis(angebot)
 
             # check if bestands data is same as last entry in db

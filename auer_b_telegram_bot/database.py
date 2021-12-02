@@ -18,6 +18,16 @@ class Database:
             port=settings.POSTGRES_PORT,
         )
 
+    @staticmethod
+    def get_db_connection(): 
+        return psycopg2.connect(
+            dbname=settings.POSTGRES_DBNAME,
+            host=settings.POSTGRES_HOSTNAME,
+            user=settings.POSTGRES_USERNAME,
+            password=settings.POSTGRES_PASSWORD,
+            port=settings.POSTGRES_PORT,
+        )
+
     def execute_query(self, query: str, arguments: Iterable, run_commit: bool):
         curr = self.database_connection.cursor()
         self.logger.debug(f"Execute Query: {query}")
@@ -60,10 +70,3 @@ class Database:
 
     def get_all_clients(self):
         return self._execute_select("SELECT * FROM clients", ())
-
-    def get_active_data(self):
-        result_list = self._execute_select(
-            "SELECT * FROM artikel WHERE ist_aktive  = True", ()
-        )
-        return data.AngebotFactory.create_angebote_from_result_list(result_list)
-

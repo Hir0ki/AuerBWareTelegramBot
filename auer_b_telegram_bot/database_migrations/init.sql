@@ -45,3 +45,4 @@ SELECT create_hypertable('bestand', 'created_datetime' );
 CREATE INDEX ON  bestand ( artnr, created_datetime DESC ); 
 
 CREATE TABLE IF NOT EXISTS clients(client_id VARCHAR(32), PRIMARY KEY(client_id));
+

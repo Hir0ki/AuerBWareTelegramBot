@@ -10,11 +10,15 @@ def get_data_from_site(kategorie):
     base_url = "https://www.auer-packaging.com"
     logging.getLogger("auer_b_telegram_bot.scraper").info(f"scrape item site: {kategorie.url}")
     html = BeautifulSoup(requests.get(base_url+kategorie.url).text, "html.parser")
-    table = html.select("form.categoryForm")[0].find("tbody").find_all("tr")
-    scraped_at = datetime.now()
     angebote = []
-    for row in table:
-        angebote.append(AngebotFactory.create_angebot_from_html(row, scraped_at, kategorie.kategorie_id))
+    try:
+        table = html.select("form.categoryForm")[0].find("tbody").find_all("tr")
+        scraped_at = datetime.now()
+        
+        for row in table:
+            angebote.append(AngebotFactory.create_angebot_from_html(row, scraped_at, kategorie.kategorie_id))
+    except IndexError:
+        return angebote
     return angebote
 
 
