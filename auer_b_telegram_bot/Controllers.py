@@ -1,5 +1,7 @@
+from psycopg2 import connect
 from auer_b_telegram_bot.records import Angebot
 from auer_b_telegram_bot.database import Database
+from datetime import datetime
 from typing import List
 import texttable
 import logging
@@ -105,6 +107,55 @@ class AuerController:
                 self.insert_bestand(angebot)
 
             self.database.database_connection.commit()
+
+        # write 0 in bestand if no update of artikel
+
+        connection = self.database.get_db_connection()
+
+        cursor = connection.cursor()
+
+        cursor.execute("""SELECT artnr from artikel""")
+
+        artnrs = cursor.fetchall()
+        bestand_of_all_artikel = []
+        for artnr in artnrs:
+            cursor.execute(
+                """
+                SELECT 
+                        artnr,
+                        verfügbar
+                        FROM bestand 
+                        WHERE  artnr = %s 
+                        ORDER BY created_datetime DESC
+                        LIMIT 1
+                    """,
+                (artnr),
+            )
+            bestand_of_all_artikel.append(cursor.fetchone())
+
+        gescrapte_artnr = [angebot.artnr for angebot in angebote]
+        for bestand in bestand_of_all_artikel:
+            artnr = bestand[0]
+            verfügbar = int(bestand[1])
+            if verfügbar >= 1:
+                if artnr not in gescrapte_artnr:
+                    self.logger.debug(f"Write artnr: {artnr} set to 0")
+
+                    cursor.execute(
+                        """
+                            INSERT INTO bestand ( 
+                                created_datetime,
+                                artnr,
+                                verfügbar
+                                )
+                            VALUES
+                                (%s, %s, %s);
+                        """,
+                        [datetime.now(), artnr, 0],
+                    )
+        connection.commit()
+        cursor.close()
+        connection.close()
 
     def get_current_data(self):
         return self.database.get_active_data()

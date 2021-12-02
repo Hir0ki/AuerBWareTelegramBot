@@ -1,7 +1,9 @@
+import dataclasses
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
 from auer_b_telegram_bot.Controllers import AuerController
+from auer_b_telegram_bot.database import Database
 from auer_b_telegram_bot.factories import AngebotFactory, KategorieFactory
 import logging
 
@@ -49,3 +51,7 @@ def scrape_site(context):
     logger.info(f"Done Scraping found {len(angebote)} listings")
     dataclass = AuerController()
     dataclass.write_data_to_db(angebote)
+
+   
+                
+

@@ -30,6 +30,6 @@ loggers:
     handlers: [console]
     propagate: no
   auer_b_telegram_bot.controller:
-    level: INFO
+    level: DEBUG
     handlers: [console]
     propagate: no
