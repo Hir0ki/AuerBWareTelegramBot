@@ -4,13 +4,8 @@ services:
     build: .
     env_file: "dev.env"
     networks:
-      - timescaledb_multi_app_postgres
-    volumes:
-        - auer_bot_database:/var/lib/auer_telegram_bot
-
-volumes:
-    auer_bot_database:
+      - postgres 
 
 networks:
-  timescaledb_multi_app_postgres:
+  postgres:
     external: true
