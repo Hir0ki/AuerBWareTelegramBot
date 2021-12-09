@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
 
 
 @dataclass
@@ -28,5 +27,3 @@ class Kategorie:
     url: str
     besonderheit_1_name: str
     besonderheit_2_name: str
-
-

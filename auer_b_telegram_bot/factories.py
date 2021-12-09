@@ -124,7 +124,6 @@ class KategorieFactory:
         output_list = []
         for i, kategorie_name in enumerate(kategories_names):
             kategorie_name = kategorie_name.strip()
-            
             if kategorie_name not in db_kategorien_namen:
                 logger.debug(f"found new kategorie: {kategorie_name}")
                 output_list.append(
@@ -142,7 +141,6 @@ class KategorieFactory:
                     for kategorie in db_kategorien
                     if kategorie.name == kategorie_name
                 ][0]
-                
                 output_list.append(db_kategorie)
 
         return output_list
@@ -154,13 +152,13 @@ class KategorieFactory:
 
         kategories_data = database._execute_select(
             """
-        SELECT 
+        SELECT
             kategorie_id,
             name,
             url,
             besonderheit_1_name,
             besonderheit_2_name
-        FROM kategorien 
+        FROM kategorien
         """,
             [],
         )
@@ -182,7 +180,7 @@ class KategorieFactory:
         db = Database()
         for kategorie in kategories:
 
-            if kategorie.kategorie_id == None:
+            if kategorie.kategorie_id is None:
 
                 db.execute_query(
                     """
@@ -190,7 +188,7 @@ class KategorieFactory:
                         name,
                         url,
                         besonderheit_1_name,
-                        besonderheit_2_name 
+                        besonderheit_2_name
                     )
                     VALUES ( %s, %s, %s, %s);
                     """,
@@ -205,7 +203,7 @@ class KategorieFactory:
             else:
                 db.execute_query(
                     """
-                    UPDATE kategorien SET 
+                    UPDATE kategorien SET
                         name=%s,
                         url=%s,
                         besonderheit_1_name=%s,

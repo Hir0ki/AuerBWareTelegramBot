@@ -4,9 +4,6 @@ from telegram.ext import (
     Updater,
     CommandHandler,
     CallbackContext,
-    ConversationHandler,
-    MessageHandler,
-    Filters,
 )
 from config import settings
 from auer_b_telegram_bot.Controllers import AuerController
@@ -15,6 +12,7 @@ import pytz
 import logging
 
 TIME = range(1)
+
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.

@@ -8,7 +8,7 @@ class Database:
     def __init__(self):
         self.logger = logging.getLogger("auer_b_telegram_bot.database")
         self.logger.debug(
-            f"postgres paramter: database: {settings.POSTGRES_DBNAME} / Hostname: {settings.POSTGRES_HOSTNAME} / Username: {settings.POSTGRES_USERNAME} / Port: {settings.POSTGRES_PORT}"
+            """postgres paramter: database: {settings.POSTGRES_DBNAME} / Hostname: {settings.POSTGRES_HOSTNAME} / Username: {settings.POSTGRES_USERNAME} / Port: {settings.POSTGRES_PORT}"""
         )
         self.database_connection = psycopg2.connect(
             dbname=settings.POSTGRES_DBNAME,
@@ -19,7 +19,7 @@ class Database:
         )
 
     @staticmethod
-    def get_db_connection(): 
+    def get_db_connection():
         return psycopg2.connect(
             dbname=settings.POSTGRES_DBNAME,
             host=settings.POSTGRES_HOSTNAME,
@@ -33,7 +33,7 @@ class Database:
         self.logger.debug(f"Execute Query: {query}")
         self.logger.debug(f"Query Parameter: {arguments}")
         result = curr.execute(query, arguments)
-        if run_commit == True:
+        if run_commit is True:
             self.database_connection.commit()
         curr.close()
         return result
