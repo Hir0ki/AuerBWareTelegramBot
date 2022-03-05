@@ -124,7 +124,7 @@ class KategorieFactory:
         output_list = []
         for i, kategorie_name in enumerate(kategories_names):
             kategorie_name = kategorie_name.strip()
-            
+
             if kategorie_name not in db_kategorien_namen:
                 logger.debug(f"found new kategorie: {kategorie_name}")
                 output_list.append(
@@ -142,7 +142,7 @@ class KategorieFactory:
                     for kategorie in db_kategorien
                     if kategorie.name == kategorie_name
                 ][0]
-                
+
                 output_list.append(db_kategorie)
 
         return output_list

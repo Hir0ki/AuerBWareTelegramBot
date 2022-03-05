@@ -19,7 +19,7 @@ class Database:
         )
 
     @staticmethod
-    def get_db_connection(): 
+    def get_db_connection():
         return psycopg2.connect(
             dbname=settings.POSTGRES_DBNAME,
             host=settings.POSTGRES_HOSTNAME,

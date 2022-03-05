@@ -17,21 +17,21 @@ class AuerController:
 
         for angebot in angebote:
             self.database.execute_query(
-                """INSERT INTO artikel ( 
-                                         artnr, 
-                                         außenmaße, 
-                                         stück_auf_palette, 
+                """INSERT INTO artikel (
+                                         artnr,
+                                         außenmaße,
+                                         stück_auf_palette,
                                          besonderheit1,
                                          besonderheit2,
-                                         kategorie_id ) 
-                                VALUES 
-                                    ( %s, %s, %s, %s, %s, %s ) 
+                                         kategorie_id )
+                                VALUES
+                                    ( %s, %s, %s, %s, %s, %s )
                                 ON CONFLICT (artnr)
                                 DO
-                                    UPDATE SET 
-                                         artnr =%s, 
-                                         außenmaße=%s, 
-                                         stück_auf_palette=%s, 
+                                    UPDATE SET
+                                         artnr =%s
+                                         außenmaße=%s,
+                                         stück_auf_palette=%s,
                                          besonderheit1=%s,
                                          besonderheit2=%s,
                                          kategorie_id=%s;""",
@@ -60,8 +60,8 @@ class AuerController:
                         preis_b_ware,
                         preis_pro_stück_palatte_neu,
                         preis_pro_stück_palatte_b_ware,
-                        währung FROM preise 
-                        WHERE  artnr = %s 
+                        währung FROM preise
+                        WHERE  artnr = %s
                         ORDER BY created_datetime DESC
                         LIMIT 1
                 """,
@@ -89,8 +89,8 @@ class AuerController:
                 SELECT created_datetime,
                         artnr,
                         verfügbar
-                        FROM bestand 
-                        WHERE  artnr = %s 
+                        FROM bestand
+                        WHERE  artnr = %s
                         ORDER BY created_datetime DESC
                         LIMIT 1
                 """,
@@ -121,11 +121,11 @@ class AuerController:
         for artnr in artnrs:
             cursor.execute(
                 """
-                SELECT 
+                SELECT
                         artnr,
                         verfügbar
-                        FROM bestand 
-                        WHERE  artnr = %s 
+                        FROM bestand
+                        WHERE  artnr = %s
                         ORDER BY created_datetime DESC
                         LIMIT 1
                     """,
@@ -143,7 +143,7 @@ class AuerController:
 
                     cursor.execute(
                         """
-                            INSERT INTO bestand ( 
+                            INSERT INTO bestand (
                                 created_datetime,
                                 artnr,
                                 verfügbar
@@ -175,7 +175,7 @@ class AuerController:
     def insert_preis(self, angebot):
         self.database.execute_query(
             """
-                            INSERT INTO preise ( 
+                            INSERT INTO preise (
                                 created_datetime ,
                                 artnr,
                                 preis_neu,
@@ -201,7 +201,7 @@ class AuerController:
     def insert_bestand(self, angebot):
         self.database.execute_query(
             """
-                            INSERT INTO bestand ( 
+                            INSERT INTO bestand (
                                 created_datetime,
                                 artnr,
                                 verfügbar

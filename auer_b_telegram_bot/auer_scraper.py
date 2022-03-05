@@ -10,15 +10,21 @@ import logging
 
 def get_data_from_site(kategorie):
     base_url = "https://www.auer-packaging.com"
-    logging.getLogger("auer_b_telegram_bot.scraper").info(f"scrape item site: {kategorie.url}")
-    html = BeautifulSoup(requests.get(base_url+kategorie.url).text, "html.parser")
+    logging.getLogger("auer_b_telegram_bot.scraper").info(
+        f"scrape item site: {kategorie.url}"
+    )
+    html = BeautifulSoup(requests.get(base_url + kategorie.url).text, "html.parser")
     angebote = []
     try:
         table = html.select("form.categoryForm")[0].find("tbody").find_all("tr")
         scraped_at = datetime.now()
-        
+
         for row in table:
-            angebote.append(AngebotFactory.create_angebot_from_html(row, scraped_at, kategorie.kategorie_id))
+            angebote.append(
+                AngebotFactory.create_angebot_from_html(
+                    row, scraped_at, kategorie.kategorie_id
+                )
+            )
     except IndexError:
         return angebote
     return angebote
@@ -27,19 +33,20 @@ def get_data_from_site(kategorie):
 def get_kategories():
     logger = logging.getLogger("auer_b_telegram_bot.scraper")
     url = "https://www.auer-packaging.com/de/de/B-Ware.html"
-    
+
     logger.info(f"Scraping kategorie urls: {url}")
     html = BeautifulSoup(requests.get(url).text, "html.parser")
-    kategories =  KategorieFactory.create_Kategories_from_html(html.select("div.categoryview")[0])
+    kategories = KategorieFactory.create_Kategories_from_html(
+        html.select("div.categoryview")[0]
+    )
     KategorieFactory.write_kategories_to_db(kategories)
-    
-    return KategorieFactory.get_kategories_from_db()
 
+    return KategorieFactory.get_kategories_from_db()
 
 
 def scrape_site(context):
     logger = logging.getLogger("auer_b_telegram_bot.scraper")
-    
+
     kategories = get_kategories()
     logger.info("Starting to Scraper site")
     angebote = []
@@ -51,7 +58,3 @@ def scrape_site(context):
     logger.info(f"Done Scraping found {len(angebote)} listings")
     dataclass = AuerController()
     dataclass.write_data_to_db(angebote)
-
-   
-                
-

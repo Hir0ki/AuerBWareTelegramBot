@@ -28,5 +28,3 @@ class Kategorie:
     url: str
     besonderheit_1_name: str
     besonderheit_2_name: str
-
-
