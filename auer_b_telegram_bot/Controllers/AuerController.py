@@ -1,4 +1,3 @@
-from psycopg2 import connect
 from auer_b_telegram_bot.records import Angebot
 from auer_b_telegram_bot.database import Database
 from datetime import datetime
@@ -9,7 +8,7 @@ import logging
 
 class AuerController:
     def __init__(self):
-        self.logger = logging.getLogger("auer_b_telegram_bot.controller")
+        self.logger = logging.getLogger("auer_b_telegram_bot.Auercontroller")
         self.logger.info("Inserting scraped data into db")
         self.database = Database()
 
@@ -29,7 +28,7 @@ class AuerController:
                                 ON CONFLICT (artnr)
                                 DO
                                     UPDATE SET
-                                         artnr =%s
+                                         artnr=%s,
                                          außenmaße=%s,
                                          stück_auf_palette=%s,
                                          besonderheit1=%s,
@@ -156,9 +155,6 @@ class AuerController:
         connection.commit()
         cursor.close()
         connection.close()
-
-    def get_current_data(self):
-        return self.database.get_active_data()
 
     def text_table_of_current_data(self):
         table = texttable.Texttable()

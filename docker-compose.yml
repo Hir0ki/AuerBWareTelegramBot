@@ -4,11 +4,10 @@ services:
     build: .
     env_file: "dev.env"
     networks:
-      - postgres 
+      - postgres
   db:
-    container_name: timescaledb 
-    image: timescale/timescaledb:latest-pg12 
-    restart: always
+    container_name: timescaledb
+    image: timescale/timescaledb:latest-pg12
     volumes:
       - "db_data:/var/lib/postgresql/data/"
 
@@ -19,7 +18,6 @@ services:
   pgadmin:
     container_name: pgadmin4
     image: dpage/pgadmin4:6.2
-    restart: always
     volumes:
       - "pgadmin:/var/lib/pgadmin/"
     ports:

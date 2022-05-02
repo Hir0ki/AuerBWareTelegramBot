@@ -33,7 +33,7 @@ class Database:
         self.logger.debug(f"Execute Query: {query}")
         self.logger.debug(f"Query Parameter: {arguments}")
         result = curr.execute(query, arguments)
-        if run_commit == True:
+        if run_commit is True:
             self.database_connection.commit()
         curr.close()
         return result

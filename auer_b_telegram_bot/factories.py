@@ -154,13 +154,13 @@ class KategorieFactory:
 
         kategories_data = database._execute_select(
             """
-        SELECT 
+        SELECT
             kategorie_id,
             name,
             url,
             besonderheit_1_name,
             besonderheit_2_name
-        FROM kategorien 
+        FROM kategorien
         """,
             [],
         )
@@ -182,7 +182,7 @@ class KategorieFactory:
         db = Database()
         for kategorie in kategories:
 
-            if kategorie.kategorie_id == None:
+            if kategorie.kategorie_id is None:
 
                 db.execute_query(
                     """
@@ -190,7 +190,7 @@ class KategorieFactory:
                         name,
                         url,
                         besonderheit_1_name,
-                        besonderheit_2_name 
+                        besonderheit_2_name
                     )
                     VALUES ( %s, %s, %s, %s);
                     """,
@@ -205,7 +205,7 @@ class KategorieFactory:
             else:
                 db.execute_query(
                     """
-                    UPDATE kategorien SET 
+                    UPDATE kategorien SET
                         name=%s,
                         url=%s,
                         besonderheit_1_name=%s,

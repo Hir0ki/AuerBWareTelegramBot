@@ -2,7 +2,7 @@ import dataclasses
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
-from auer_b_telegram_bot.Controllers import AuerController
+from auer_b_telegram_bot.Controllers.AuerController import AuerController
 from auer_b_telegram_bot.database import Database
 from auer_b_telegram_bot.factories import AngebotFactory, KategorieFactory
 import logging

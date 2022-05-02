@@ -1,20 +1,19 @@
 import auer_scraper
-from telegram import Update, ParseMode, ReplyKeyboardMarkup
+from telegram import Update, ParseMode
 from telegram.ext import (
     Updater,
     CommandHandler,
     CallbackContext,
-    ConversationHandler,
-    MessageHandler,
-    Filters,
 )
 from config import settings
-from auer_b_telegram_bot.Controllers import AuerController
-from datetime import time, timezone, datetime
+from auer_b_telegram_bot.Controllers.AuerController import AuerController
+from auer_b_telegram_bot.Controllers.AlertController import AlertController
+from datetime import time
 import pytz
 import logging
 
 TIME = range(1)
+
 
 # Define a few command handlers. These usually take the two arguments update and
 # context. Error handlers also receive the raised TelegramError object in error.
@@ -22,23 +21,21 @@ def start(update: Update, _: CallbackContext) -> None:
     update.message.reply_text("Hi! Use /set <seconds> to set a timer")
 
 
-def subscribe(update: Update, context: CallbackContext) -> None:
-    data: AuerController = AuerController()
-    logger = logging.getLogger("auer_b_telegram_bot.Bot")
-    logger.info(f"Subcribing new client: {update.message.chat_id}")
-    data.database.insert_new_client(str(update.message.chat_id))
-    update.message.reply_text(
-        "Sie bekommen jetzt jeden Tag um 20 Uhr die aktuellen Auer Angebote."
-    )
+def add_alert(update: Update, context: CallbackContext):
+    command_string = "/add_alert"
+    alert_controller = AlertController()
+    chat_id = update.message.chat_id
+    search_string = update.message.text
+    search_string = search_string.replace(command_string, "").strip()
+    alert_controller.add_alert(chat_id, search_string)
+    update.message.reply_text(f"{search_string} hinzugefügt")
 
 
-def unsubscribe(update: Update, _: CallbackContext) -> None:
-    data: AuerController = AuerController()
-    logger = logging.getLogger("auer_b_telegram_bot.Bot")
-    logger.info(f"Unsubcribing client: {update.message.chat_id}")
-    data.database.delete_client(update.message.chat_id)
-    update.message.reply_text("Sie bekomme jetzt keine Angebote mehr.")
-
+def evaluate_alerts(context: CallbackContext) -> None:
+    alert_controller = AlertController()
+    alert_controller.evaluate_alerts()
+    #for client in clients:
+    #    context.bot.send_message(client[0], text, parse_mode=ParseMode.HTML)
 
 def get_current_angebote(update: Update, context: CallbackContext) -> None:
 
@@ -70,6 +67,11 @@ def main() -> None:
 
     updater.job_queue.run_once(when=0, callback=auer_scraper.scrape_site)
     updater.job_queue.run_repeating(
+        callback=evaluate_alerts,
+        interval=10,
+        job_kwargs=[],
+    )
+    updater.job_queue.run_repeating(
         callback=auer_scraper.scrape_site,
         interval=int(settings.AUER_SCRAPE_INTERVAL),
         job_kwargs=[],
@@ -79,8 +81,7 @@ def main() -> None:
     # on different commands - answer in Telegram
     dispatcher.add_handler(CommandHandler("start", start))
     dispatcher.add_handler(CommandHandler("angebote", get_current_angebote))
-    dispatcher.add_handler(CommandHandler("subscribe", subscribe))
-    dispatcher.add_handler(CommandHandler("unsubscribe", unsubscribe))
+    dispatcher.add_handler(CommandHandler("add_alert", add_alert))
     # Start the Bot
     updater.start_polling()
 

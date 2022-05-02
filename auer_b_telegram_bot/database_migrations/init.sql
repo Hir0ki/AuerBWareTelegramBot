@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS preise(
 
 SELECT create_hypertable('preise', 'created_datetime' );
 
-CREATE INDEX ON  preise ( artnr, created_datetime DESC ); 
+CREATE INDEX ON  preise ( artnr, created_datetime DESC );
 
 
 CREATE TABLE IF NOT EXISTS kategorien(
@@ -42,7 +42,10 @@ CREATE TABLE IF NOT EXISTS bestand(
 
 SELECT create_hypertable('bestand', 'created_datetime' );
 
-CREATE INDEX ON  bestand ( artnr, created_datetime DESC ); 
+CREATE INDEX ON  bestand ( artnr, created_datetime DESC );
 
-CREATE TABLE IF NOT EXISTS clients(client_id VARCHAR(32), PRIMARY KEY(client_id));
+CREATE TABLE IF NOT EXISTS chats(client_id VARCHAR(32), PRIMARY KEY(client_id));
 
+CREATE TABLE IF NOT EXISTS alert_search(search_str VARCHAR(32), PRIMARY KEY(search_str));
+
+CREATE TABLE IF NOT EXISTS alert_chat(chat_id VARCHAR(32), search_str VARCHAR(32));
